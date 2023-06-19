@@ -48,7 +48,7 @@ def get_carbon_price():
   current_data = response.json()['bars'][-1]
   price = current_data[1]
   day = datetime.strptime(current_data[0],'%a %b %d %X %Y').strftime('%d.%m.')
-  return f"CO2-Preis in der EU am {day}, price} €\n"
+  return f"CO2-Preis in der EU am {day}, {price} €\n"
 
 def tempvalue():
   response = requests.get(CE_URL)
