@@ -40,7 +40,7 @@ def co2value():
     co2_df = pd.read_csv(co2url, comment ="#")
     current_values = co2_df.iloc[-1]
     todays_date = f"{int(current_values['day'])}.{int(current_values['month'])}.{int(current_values['year'])}"
-    return f'"CO2 in der Atmosphäre am {todays_date}"; "{to_decimal_comma(current_values["trend"])} ppm"\n'
+    return f'"CO2 in der Atmosphäre am {todays_date}";"{to_decimal_comma(current_values["trend"])} ppm"\n'
 
 def get_carbon_price():
   params = {
@@ -53,7 +53,7 @@ def get_carbon_price():
   current_data = response.json()['bars'][-1]
   price = current_data[1]
   day = datetime.strptime(current_data[0],'%a %b %d %X %Y').strftime('%d.%m.')
-  return f'"CO2-Preis in der EU am {day}"; "{to_decimal_comma(price)} €"\n'
+  return f'"CO2-Preis in der EU am {day}";"{to_decimal_comma(price)} €"\n'
 
 def tempvalue():
   response = requests.get(CE_URL)
