@@ -46,8 +46,8 @@ def seavalue():
 
 with open("data/final/co2.csv","w") as co2File:
     co2File.write(co2value())
-    co2File.write(tempvalue())
-    co2File.write(seavalue())
+    #co2File.write(tempvalue())
+    #co2File.write(seavalue())
 
 headers = {"Authorization": TOKEN,"Accept": "*/*"}
 
