@@ -20,7 +20,7 @@ TOKEN =  os.environ['DATAWRAPPER_ACCESS_TOKEN']
 
 dwurl = "https://api.datawrapper.de/v3/charts/25Qgy/publish"
 co2url= "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_trend_gl.csv"
-tempurl = "http://berkeleyearth.lbl.gov/auto/Global/Land_and_Ocean_complete.txt"
+CE_URL = 'https://climatereanalyzer.org/clim/t2_daily/json/cfsr_world_t2_day.json'
 seaurl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/slr/slr_sla_gbl_free_txj1j2_90.csv"
 
 def co2value():
