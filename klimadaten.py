@@ -68,7 +68,7 @@ def tempvalue():
   df_current['anomaly'] = df_current[current_year]-df_current['1979-2000 mean']+0.657
   temp = round_half_up(df_current.iloc[-1]['anomaly'],2)
   date = df_current.iloc[-1]['date'].strftime('%d.%m')
-  return f'"Erderhitzung am {date}; +{to_decimal_comma(temp)} °C"\n'
+  return f'"Erderhitzung am {date}";"+{to_decimal_comma(temp)} °C"\n'
 
 def seavalue():
     sea_df = pd.read_csv(seaurl, comment ="#")
