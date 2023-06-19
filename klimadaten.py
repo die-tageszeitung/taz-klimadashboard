@@ -55,6 +55,39 @@ def get_carbon_price():
   day = datetime.strptime(current_data[0],'%a %b %d %X %Y').strftime('%d.%m.')
   return f'"CO2-Preis in der EU am {day}";"{to_decimal_comma(price)} €"\n'
 
+def get_power_mix():
+  headers = {
+      'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+      'Accept-Language': 'de,en-US;q=0.7,en;q=0.3',
+      # 'Accept-Encoding': 'gzip, deflate, br',
+      'Alt-Used': 'ember-climate.org',
+      'Connection': 'keep-alive',
+      # 'Cookie': 'wp-wpml_current_language=en; _ga_E20JF0WCX3=GS1.1.1687179005.1.1.1687181788.0.0.0; _ga=GA1.2.1385766603.1687179005; _gid=GA1.2.689057083.1687179006; PHPSESSID=847260e74d56d945dbd5786c5282ac6a',
+      'Upgrade-Insecure-Requests': '1',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'same-origin',
+      'Sec-Fetch-User': '?1',
+      # Requests doesn't support trailers
+      # 'TE': 'trailers',
+  }
+
+  response = requests.get(
+      'https://ember-climate.org/app/uploads/2022/07/monthly_full_release_long_format-4.csv',
+      #cookies=cookies,
+      headers=headers,
+  )
+
+  data = StringIO(response.text)
+
+  df = pd.read_csv(data,parse_dates=['Date'])
+  df = df[(df['Area'] == 'World')&(df['Category'] == 'Electricity generation')&(df['Unit'] == '%')&(df['Variable'] == 'Renewables')].copy().reset_index()
+  current_data = df.iloc[-1]
+  renewables = current_data['Value']
+  month = int(current_data['Date'].strftime('%m'))
+  return f'"Strommix im {MONTHS(month)}";"{to_decimal_comma(round_half_up(renewables,1))}%"\n'
+
 def tempvalue():
   response = requests.get(CE_URL)
   raw_data = response.json()
@@ -81,6 +114,7 @@ if __name__ == "__main__":
               co2File.write(co2value())
               co2File.write(tempvalue())
               co2File.write(get_carbon_price())
+              co2File.write(get_power_mix())
           
           headers = {"Authorization": TOKEN,"Accept": "*/*"}
           
