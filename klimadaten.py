@@ -87,7 +87,7 @@ def get_power_mix():
   current_data = df.iloc[-1]
   renewables = current_data['Value']
   month = int(current_data['Date'].strftime('%m'))
-  return f'"Strommix im {MONTHS(month)}";"{to_decimal_comma(round_half_up(renewables,1))}%"\n'
+  return f'"Weltweiter Strommix im {MONTHS(month)}";"{to_decimal_comma(round_half_up(renewables,1))}%"\n'
 
 def tempvalue():
   response = requests.get(CE_URL)
