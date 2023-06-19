@@ -30,13 +30,19 @@ def co2value():
     return f"CO2 in der Atmosphäre am {todays_date}, {current_values['trend']} ppm\n"
 
 def tempvalue():
-    temp_df = pd.read_csv(tempurl, comment ="%", sep="\s+", header=None)
-    #temp_df.drop(columns=[3,4,5,6,7,8,9,10,11],inplace=True)
-    nodups_df = temp_df[temp_df[[0,1]].duplicated(keep='first')]
-    months_df = nodups_df[nodups_df[1] == nodups_df.iloc[-1,[1]][1]]
-    preind = months_df[(months_df[0]>=1850) & (months_df[0]<=1900)][2].mean()
-    temp = round(months_df.iloc[-1,[2]][2]-preind,2)
-    return f"Erderhitzung im {MONTHS[nodups_df.iloc[-1,[1]][1].astype(int).astype(str)]} {months_df.iloc[-1,[0]][0].astype(int)}, +{temp} °C\n"
+  response = requests.get(CE_URL)
+  raw_data = response.json()
+  data = {x['name']:x['data'] for x in raw_data}
+  df = pd.DataFrame.from_dict(data, orient='columns')
+  current_year = list(df.columns)[-4:-3][0]
+  df['date'] =df.index +1
+  df['date'] = pd.to_datetime(df['date'].astype(str)+current_year,format='%j%Y')
+  df_current = df[['date',current_year,'1979-2000 mean']]
+  df_current =  df_current.dropna()
+  df_current['anomaly'] = df_current[current_year]-df_current['1979-2000 mean']+0.657
+  temp = round(df_current.iloc[-1]['anomaly'],2)
+  date = df_current.iloc[-1]['date'].strftime('%d.%m')
+  return f"Erderhitzung am {date}, +{temp} °C\n"
 
 def seavalue():
     sea_df = pd.read_csv(seaurl, comment ="#")
@@ -46,7 +52,7 @@ def seavalue():
 
 with open("data/final/co2.csv","w") as co2File:
     co2File.write(co2value())
-    #co2File.write(tempvalue())
+    co2File.write(tempvalue())
     #co2File.write(seavalue())
 
 headers = {"Authorization": TOKEN,"Accept": "*/*"}
