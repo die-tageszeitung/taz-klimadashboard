@@ -21,6 +21,7 @@ TOKEN =  os.environ['DATAWRAPPER_ACCESS_TOKEN']
 dwurl = "https://api.datawrapper.de/v3/charts/25Qgy/publish"
 co2url= "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_trend_gl.csv"
 CE_URL = 'https://climatereanalyzer.org/clim/t2_daily/json/cfsr_world_t2_day.json'
+ICE_URL = 'https://www.theice.com/marketdata/DelayedMarkets.shtml'
 seaurl = "https://www.star.nesdis.noaa.gov/socd/lsa/SeaLevelRise/slr/slr_sla_gbl_free_txj1j2_90.csv"
 
 def co2value():
@@ -28,6 +29,19 @@ def co2value():
     current_values = co2_df.iloc[-1]
     todays_date = f"{int(current_values['day'])}.{int(current_values['month'])}.{int(current_values['year'])}"
     return f"CO2 in der Atmosphäre am {todays_date}, {current_values['trend']} ppm\n"
+
+def get_carbon_price():
+  params = {
+      'getHistoricalChartDataAsJson': '',
+      'marketId': '5474737',
+      'historicalSpan': '3',
+  }
+
+  response = requests.get(ICE_URL, params=params)
+  current_data = response.json()['bars'][-1]
+  price = current_data[1]
+  day = datetime.strptime(current_data[0],'%a %b %d %X %Y').strftime('%d.%m.')
+  return f"CO2-Preis in der EU am {day}, {price} €\n"
 
 def tempvalue():
   response = requests.get(CE_URL)
@@ -53,7 +67,7 @@ def seavalue():
 with open("data/final/co2.csv","w") as co2File:
     co2File.write(co2value())
     co2File.write(tempvalue())
-    #co2File.write(seavalue())
+    co2File.write(get_carbon_price())
 
 headers = {"Authorization": TOKEN,"Accept": "*/*"}
 
