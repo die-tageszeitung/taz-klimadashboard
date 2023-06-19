@@ -31,11 +31,16 @@ def round_half_up(n, decimals=0):
     multiplier = 10 ** decimals
     return math.floor(n*multiplier + 0.5) / multiplier
 
+#konvertiert eine zahl zu string und ersetzt dezimal punkte mit komma
+def to_decimal_comma(number):
+    converted_number = str(number).replace('.',',')
+    return converted_number
+
 def co2value():
     co2_df = pd.read_csv(co2url, comment ="#")
     current_values = co2_df.iloc[-1]
     todays_date = f"{int(current_values['day'])}.{int(current_values['month'])}.{int(current_values['year'])}"
-    return f"CO2 in der Atmosphäre am {todays_date}, {current_values['trend']} ppm\n"
+    return f'"CO2 in der Atmosphäre am {todays_date}"; "{to_decimal_comma(current_values['trend'])} ppm"\n'
 
 def get_carbon_price():
   params = {
@@ -48,7 +53,7 @@ def get_carbon_price():
   current_data = response.json()['bars'][-1]
   price = current_data[1]
   day = datetime.strptime(current_data[0],'%a %b %d %X %Y').strftime('%d.%m.')
-  return f"CO2-Preis in der EU am {day}, {price} €\n"
+  return f'"CO2-Preis in der EU am {day}"; "{to_decimal_comma(price)} €"\n'
 
 def tempvalue():
   response = requests.get(CE_URL)
@@ -63,7 +68,7 @@ def tempvalue():
   df_current['anomaly'] = df_current[current_year]-df_current['1979-2000 mean']+0.657
   temp = round_half_up(df_current.iloc[-1]['anomaly'],2)
   date = df_current.iloc[-1]['date'].strftime('%d.%m')
-  return f"Erderhitzung am {date}, +{temp} °C\n"
+  return f'"Erderhitzung am {date}; +{to_decimal_comma(temp)} °C"\n'
 
 def seavalue():
     sea_df = pd.read_csv(seaurl, comment ="#")
