@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import os
 import math
+from io import StringIO
 from datetime import datetime
 
 MONTHS = {"1":"Januar",
