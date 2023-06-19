@@ -15,7 +15,7 @@ MONTHS = {"1":"Januar",
           "12":"Dezember"
           }
 
-TOKEN =  
+TOKEN =  os.environ['DATAWRAPPER_ACCESS_TOKEN']
 
 dwurl = "https://api.datawrapper.de/v3/charts/25Qgy/publish"
 co2url= "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_trend_gl.csv"
