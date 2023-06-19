@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 import os
+import math
 from datetime import datetime
 
 MONTHS = {"1":"Januar",
@@ -75,13 +76,14 @@ def seavalue():
     means_df = sea_df.groupby('year').mean().mean(axis=1)
     return f"Meeresspiegelanstieg seit 1992, +{round(means_df.iloc[-1]-means_df.iloc[0],2)} mm\n"
 
-with open("data/final/co2.csv","w") as co2File:
-    co2File.write(co2value())
-    co2File.write(tempvalue())
-    co2File.write(get_carbon_price())
-
-headers = {"Authorization": TOKEN,"Accept": "*/*"}
-
-response = requests.request("POST", dwurl, headers=headers)
-
-print("Done")
+if __name__ == "__main__":
+          with open("data/final/co2.csv","w") as co2File:
+              co2File.write(co2value())
+              co2File.write(tempvalue())
+              co2File.write(get_carbon_price())
+          
+          headers = {"Authorization": TOKEN,"Accept": "*/*"}
+          
+          response = requests.request("POST", dwurl, headers=headers)
+          
+          print("Done")
